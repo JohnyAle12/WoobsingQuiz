@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -52,4 +54,16 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class);
     }
+
+    public function controlLastSession(int $id)
+    {
+        $oneDayAfter = Carbon::now()->addDay();
+        $user = self::where('id', $id)->get();
+
+        if($user->last_login > $oneDayAfter){          
+            return true;
+        }
+
+        return false;
+     }
 }
